@@ -1,0 +1,26 @@
+
+pm.globals.unset("sign");
+
+var jsondata = JSON.parse(request.data);
+var paramskey = new Array();
+var i =0;
+for(var key in jsondata){
+    if(key!='sign'){
+    paramskey[i]=key;
+    i++;
+    }
+}
+paramskey.sort();
+
+var strstamp=' ';
+for (var j=0;j<i;j++){
+    strstamp=strstamp+paramskey[j]+'='+jsondata[paramskey[j]]+'&';
+}
+strstamp=strstamp.substring(1,strstamp.length-1);
+    
+strstamp=strstamp+pm.environment.get("key");
+console.log(strstamp);
+//use SHA1, also you can use SHA256,MD5
+var strsign=CryptoJS.SHA1(strstamp).toString();
+console.log(strsign);
+pm.globals.set("sign", strsign);
