@@ -1,7 +1,71 @@
-
 pm.globals.unset("sign");
 
+var d = new Date();
+var hours = d.getHours();
+var minutes = d.getMinutes();
+var seconds = d.getSeconds();
+var day = d.getDate();
+var monthIndex = d.getMonth() + 1;
+var year = d.getFullYear().toString();
+
+if ( hours < 10 )
+    {
+        hours = "0" + hours.toString() ;
+    }
+else 
+    {
+        hours = hours.toString() ;
+    }
+
+if ( minutes < 10 )
+    {
+        minutes = "0" + minutes.toString() ;
+    }
+else 
+    {
+        minutes = minutes.toString() ;
+    }
+if ( seconds < 10 )
+    {
+        seconds = "0" + seconds.toString() ;
+    }
+else 
+    {
+        seconds = seconds.toString() ;
+    }
+
+if ( day < 10 )
+    {
+        day = "0" + day.toString() ;
+    }
+else 
+    {
+        day = day.toString() ;
+    }
+
+if ( monthIndex < 10 )
+    {
+        monthIndex = "0" + monthIndex.toString() ;
+    }
+else 
+    {
+        monthIndex = monthIndex.toString() ;
+    }
+
+var pubDate = monthIndex + day +(d.getTime()/1000).toString().substring(0,10) + (Math.floor(Math.random()*(999-100)) +100) ;
+
+var orderNum = "T8" + pubDate;
+pm.environment.set("orderNum", orderNum);
+console.log(orderNum);
+var mchntid = pm.environment.get("intStoreCode");
+var inscode = pm.environment.get("inscode");
+
+request.data = request.data.replace(/{{orderNum}}/,orderNum);
+request.data = request.data.replace(/{{intStoreCode}}/,mchntid);
+request.data = request.data.replace(/{{inscode}}/,inscode);
+
 var jsondata = JSON.parse(request.data);
+
 var paramskey = new Array();
 var i =0;
 for(var key in jsondata){
@@ -18,9 +82,9 @@ for (var j=0;j<i;j++){
 }
 strstamp=strstamp.substring(1,strstamp.length-1);
     
-strstamp=strstamp+pm.environment.get("key");
+strstamp=strstamp+pm.environment.get("signkey");
 console.log(strstamp);
 //use SHA1, also you can use SHA256,MD5
 var strsign=CryptoJS.SHA1(strstamp).toString();
 console.log(strsign);
-pm.globals.set("sign", strsign);
+pm.globals.set("sign", strsign)
